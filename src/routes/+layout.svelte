@@ -3,6 +3,7 @@
   import "@unocss/reset/tailwind.css"
   import "uno.css"
 
+  import Settings from "$lib/Settings.svelte"
   import Seo from "sk-seo"
   import { Toaster } from "svelte-sonner"
 </script>
@@ -11,6 +12,8 @@
   title="LLM Web Reader Demo"
   description="A demo for using LLM to extract information from web pages"
 />
+
+<Settings />
 
 <Toaster theme="dark" toastOptions={{ class: "text-xs font-mono" }} />
 
