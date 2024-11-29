@@ -7,7 +7,7 @@ import { OpenAI } from "openai"
 
 const client = new OpenAI()
 
-async function * extract(html: string) {
+async function * extract(html: string, markdown: string) {
   for await (const chunk of await client.chat.completions.create({
     model: "gpt-4o-mini",
     messages: [
@@ -16,19 +16,25 @@ async function * extract(html: string) {
     ],
     stream: true,
     temperature: 0,
+    prediction: { type: "content", content: markdown },
+    stream_options: { include_usage: true },
   })) {
-    const delta = chunk.choices[0].delta.content
-    if (delta)
-      yield delta
+    if (chunk.usage) {
+      chunk.usage && console.error(chunk.usage)
+    } else {
+      const delta = chunk.choices[0].delta.content
+      if (delta)
+        yield delta
+    }
   }
 }
 
 export const POST: RequestHandler = async ({ request }) => {
-  const html = await request.text()
+  const { html, markdown } = await request.json()
   if (!html)
     error(400, "Missing request body")
 
-  return new Response(iteratorToStream(extract(html)), { headers: { "content-type": "text/markdown" } })
+  return new Response(iteratorToStream(extract(html, markdown)), { headers: { "content-type": "text/markdown" } })
 }
 
 export const config = { runtime: "edge" }

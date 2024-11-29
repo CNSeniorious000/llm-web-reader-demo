@@ -19,7 +19,7 @@
 
   async function fetchLLMResult() {
     llmResult = ""
-    const res = await fetch("/api/extract", { body: cleanedHtml, method: "POST" })
+    const res = await fetch("/api/extract", { body: JSON.stringify({ html, markdown: readabilityResult }), method: "POST" })
     for await (const delta of responseToTextStream(res))
       llmResult += delta
   }
