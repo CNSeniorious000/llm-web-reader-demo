@@ -7,7 +7,7 @@ import { OpenAI } from "openai"
 
 const client = new OpenAI()
 
-async function * extract(html: string) {
+async function* extract(html: string) {
   for await (const chunk of await client.chat.completions.create({
     model: "gpt-4o-mini",
     messages: [
