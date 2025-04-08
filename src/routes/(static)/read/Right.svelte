@@ -42,7 +42,7 @@
   {:else}
     {#if type === "rendered"}
 
-      <Markdown text={displayMarkdown} />
+      <Markdown text={displayMarkdown} base={url} />
 
     {:else if type === "raw"}
 
