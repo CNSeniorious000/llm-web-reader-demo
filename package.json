@@ -21,7 +21,7 @@
     "@sveltejs/vite-plugin-svelte": "^5.0.3",
     "@unocss/extractor-svelte": "^66.0.0",
     "@unocss/reset": "^66.0.0",
-    "openai": "^4.67.3",
+    "openai": "^5.0.1",
     "shiki": "^3.0.0",
     "sk-seo": "^0.5.0",
     "svelte": "^5.0.0",
