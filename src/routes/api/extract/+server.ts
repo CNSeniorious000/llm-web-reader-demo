@@ -5,6 +5,7 @@ import { error } from "@sveltejs/kit"
 import { streamText } from "@xsai/stream-text"
 import { env } from "$env/dynamic/private"
 import { iteratorToStream } from "$lib/utils/stream"
+import { createFetch } from "xsfetch"
 
 const { OPENAI_API_KEY: apiKey, OPENAI_BASE_URL: baseURL = "https://api.openai.com/v1" } = env as unknown as { OPENAI_API_KEY?: string, OPENAI_BASE_URL?: string }
 
@@ -18,6 +19,7 @@ async function extract(html: string) {
     temperature: 0,
     apiKey,
     baseURL,
+    fetch: createFetch({ debug: true, retryDelay: 0 }),
   })
   return textStream
 }
