@@ -4,6 +4,7 @@ import { systemPrompt } from "./prompt"
 import { error } from "@sveltejs/kit"
 import { streamText } from "@xsai/stream-text"
 import { env } from "$env/dynamic/private"
+import { iteratorToStream } from "$lib/utils/stream"
 
 const { OPENAI_API_KEY: apiKey, OPENAI_BASE_URL: baseURL = "https://api.openai.com/v1" } = env as unknown as { OPENAI_API_KEY?: string, OPENAI_BASE_URL?: string }
 
@@ -26,7 +27,7 @@ export const POST: RequestHandler = async ({ request }) => {
   if (!html)
     error(400, "Missing request body")
 
-  return new Response(await extract(html), { headers: { "content-type": "text/markdown" } })
+  return new Response(iteratorToStream(await extract(html)), { headers: { "content-type": "text/markdown" } })
 }
 
 export const config = { runtime: "edge" }
