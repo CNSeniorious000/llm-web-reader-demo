@@ -2,25 +2,23 @@ import type { RequestHandler } from "./$types"
 
 import { systemPrompt } from "./prompt"
 import { error } from "@sveltejs/kit"
-import { iteratorToStream } from "$lib/utils/stream"
-import { OpenAI } from "openai"
+import { streamText } from "@xsai/stream-text"
+import { env } from "$env/dynamic/private"
 
-const client = new OpenAI()
+const { OPENAI_API_KEY: apiKey, OPENAI_BASE_URL: baseURL = "https://api.openai.com/v1" } = env as unknown as { OPENAI_API_KEY?: string, OPENAI_BASE_URL?: string }
 
-async function* extract(html: string) {
-  for await (const chunk of await client.chat.completions.create({
+async function extract(html: string) {
+  const { textStream } = await streamText({
     model: "gpt-4o-mini",
     messages: [
       { role: "system", content: systemPrompt },
       { role: "user", content: html },
     ],
-    stream: true,
     temperature: 0,
-  })) {
-    const delta = chunk.choices[0].delta.content
-    if (delta)
-      yield delta
-  }
+    apiKey,
+    baseURL,
+  })
+  return textStream
 }
 
 export const POST: RequestHandler = async ({ request }) => {
@@ -28,7 +26,7 @@ export const POST: RequestHandler = async ({ request }) => {
   if (!html)
     error(400, "Missing request body")
 
-  return new Response(iteratorToStream(extract(html)), { headers: { "content-type": "text/markdown" } })
+  return new Response(await extract(html), { headers: { "content-type": "text/markdown" } })
 }
 
 export const config = { runtime: "edge" }
