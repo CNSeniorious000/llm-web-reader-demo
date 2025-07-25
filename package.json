@@ -34,7 +34,7 @@
     "xsfetch": "^0.3.0"
   },
   "devDependencies": {
-    "@antfu/eslint-config": "^4.1.0",
+    "@antfu/eslint-config": "^5.0.0",
     "@types/turndown": "^5.0.5",
     "@unocss/eslint-config": "^66.0.0",
     "eslint": "^9.12.0",
